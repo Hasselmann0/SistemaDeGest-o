@@ -1,0 +1,14 @@
+<Solution>
+  <Folder Name="/SistemaDeGestao.API/">
+    <Project Path="SistemaDeGestao/SistemaDeGestao.csproj" />
+  </Folder>
+  <Folder Name="/SistemaDeGestao.App/">
+    <Project Path="SistemaDeGestao.APP/SistemaDeGestao.APP.csproj" />
+  </Folder>
+  <Folder Name="/SistemaDeGestao.Domain/">
+    <Project Path="SistemaDeGestao.Domain/SistemaDeGestao.Domain.csproj" />
+  </Folder>
+  <Folder Name="/SistemaDeGestao.Infra/">
+    <Project Path="SistemaDeGestao.Infra/SistemaDeGestao.Infra.csproj" />
+  </Folder>
+</Solution>

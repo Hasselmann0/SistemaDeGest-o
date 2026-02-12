@@ -1,0 +1,54 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Hass\\Desktop\\Csharp\\SistemaDeGestao\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{1E8C6581-B594-49EE-BFFE-563FB55A5F08}|SistemaDeGestao.Domain\\SistemaDeGestao.Domain.csproj|c:\\users\\hass\\desktop\\csharp\\sistemadegestao\\sistemadegestao.domain\\sistemadegestao.domain.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{1E8C6581-B594-49EE-BFFE-563FB55A5F08}|SistemaDeGestao.Domain\\SistemaDeGestao.Domain.csproj|solutionrelative:sistemadegestao.domain\\sistemadegestao.domain.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2813FBD4-06E6-456F-A2E1-1E60FA0E491E}|SistemaDeGestao.APP\\SistemaDeGestao.APP.csproj|c:\\users\\hass\\desktop\\csharp\\sistemadegestao\\sistemadegestao.app\\sistemadegestao.app.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{2813FBD4-06E6-456F-A2E1-1E60FA0E491E}|SistemaDeGestao.APP\\SistemaDeGestao.APP.csproj|solutionrelative:sistemadegestao.app\\sistemadegestao.app.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "SistemaDeGestao.Domain",
+              "DocumentMoniker": "C:\\Users\\Hass\\Desktop\\Csharp\\SistemaDeGestao\\SistemaDeGestao.Domain\\SistemaDeGestao.Domain.csproj",
+              "RelativeDocumentMoniker": "SistemaDeGestao.Domain\\SistemaDeGestao.Domain.csproj",
+              "ToolTip": "C:\\Users\\Hass\\Desktop\\Csharp\\SistemaDeGestao\\SistemaDeGestao.Domain\\SistemaDeGestao.Domain.csproj",
+              "RelativeToolTip": "SistemaDeGestao.Domain\\SistemaDeGestao.Domain.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-02-12T14:34:30.921Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "SistemaDeGestao.APP",
+              "DocumentMoniker": "C:\\Users\\Hass\\Desktop\\Csharp\\SistemaDeGestao\\SistemaDeGestao.APP\\SistemaDeGestao.APP.csproj",
+              "RelativeDocumentMoniker": "SistemaDeGestao.APP\\SistemaDeGestao.APP.csproj",
+              "ToolTip": "C:\\Users\\Hass\\Desktop\\Csharp\\SistemaDeGestao\\SistemaDeGestao.APP\\SistemaDeGestao.APP.csproj",
+              "RelativeToolTip": "SistemaDeGestao.APP\\SistemaDeGestao.APP.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-02-12T14:33:21.688Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
