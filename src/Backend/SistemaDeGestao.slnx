@@ -1,6 +1,6 @@
 <Solution>
   <Folder Name="/SistemaDeGestao.API/">
-    <Project Path="SistemaDeGestao/SistemaDeGestao.csproj" />
+    <Project Path="SistemaDeGestao/SistemaDeGestao.API.csproj" />
   </Folder>
   <Folder Name="/SistemaDeGestao.App/">
     <Project Path="SistemaDeGestao.APP/SistemaDeGestao.APP.csproj" />

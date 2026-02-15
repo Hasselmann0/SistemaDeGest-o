@@ -1,21 +1,22 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using SistemaDeGestao.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Reflection.Emit;
-using System.Text;
 
 namespace SistemaDeGestao.Infra.Data
 {
-    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
+    public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<UserEntity>(options)
     {
-        public DbSet<UserEntity> Users { get; set; }
+
+        public DbSet<RequestEntity> Requests => Set<RequestEntity>();
+        public DbSet<RequestStatusHistory> RequestStatusHistories => Set<RequestStatusHistory>();
 
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.HasDefaultSchema("identity");
 
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
         }
