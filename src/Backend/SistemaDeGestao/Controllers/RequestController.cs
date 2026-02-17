@@ -60,9 +60,6 @@ namespace SistemaDeGestao.API.Controllers
             return Ok(request);
         }
 
-        /// <summary>
-        /// Cria uma nova solicitação (status inicial: Pending)
-        /// </summary>
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateRequestDto dto)
         {
@@ -71,9 +68,6 @@ namespace SistemaDeGestao.API.Controllers
             return CreatedAtAction(nameof(GetById), new { id = request.Id }, request);
         }
 
-        /// <summary>
-        /// Aprova uma solicitação pendente (apenas Manager)
-        /// </summary>
         [HttpPost("{id:guid}/approve")]
         [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Approve(Guid id, [FromBody] ApproveRequestDto dto)
@@ -87,9 +81,6 @@ namespace SistemaDeGestao.API.Controllers
             return Ok(result);
         }
 
-        /// <summary>
-        /// Rejeita uma solicitação pendente (apenas Manager)
-        /// </summary>
         [HttpPost("{id:guid}/reject")]
         [Authorize(Roles = "Manager")]
         public async Task<IActionResult> Reject(Guid id, [FromBody] RejectRequestDto dto)
@@ -103,9 +94,7 @@ namespace SistemaDeGestao.API.Controllers
             return Ok(result);
         }
 
-        /// <summary>
-        /// Obtém o histórico de status de uma solicitação
-        /// </summary>
+
         [HttpGet("{id:guid}/history")]
         public async Task<IActionResult> GetHistory(Guid id)
         {
