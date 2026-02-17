@@ -11,7 +11,10 @@ using SistemaDeGestao.Infra.Repositories;
 using SistemaDeGestao.Infra.Seed;
 using System.Text;
 
+
+
 var builder = WebApplication.CreateBuilder(args);
+
 
 // JWT Configuration
 var jwtSettings = builder.Configuration.GetSection("Jwt");
@@ -47,7 +50,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<ILoginRepository, LoginRepository>();
+builder.Services.AddScoped<IRequestRepository, RequestRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IResquestService, RequestService>();
 
 builder.Services.AddControllers();
 
@@ -55,8 +60,19 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAngular", policy =>
+    {
+        policy.WithOrigins("http://localhost:4200")
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 var app = builder.Build();
 
+app.UseCors("AllowAngular");
 
 await app.Services.SeedDatabaseAsync();
 

@@ -1,0 +1,23 @@
+<div class="request-page">
+  @if (loading()) {
+    <div class="loading-container">
+      <mat-spinner diameter="48"></mat-spinner>
+    </div>
+  } @else {
+    <app-request-table
+      [requests]="requests()"
+      (editRequest)="onEditRequest($event)"
+      (deleteRequest)="onDeleteRequest($event)"
+    />
+  }
+
+  <button
+    mat-fab
+    class="fab-add"
+    color="primary"
+    aria-label="Adicionar solicitação"
+    (click)="onAddRequest()"
+  >
+    <mat-icon>add</mat-icon>
+  </button>
+</div>

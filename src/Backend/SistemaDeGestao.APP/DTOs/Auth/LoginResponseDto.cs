@@ -9,11 +9,4 @@ namespace SistemaDeGestao.APP.DTOs.Auth
     DateTime ExpiresAt,
     UserInfoDto User
     );
-
-    public record UserInfoDto(
-        Guid Id,
-        string Name,
-        string Email,
-        string Role
-    );
 }

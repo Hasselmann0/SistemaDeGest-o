@@ -1,0 +1,50 @@
+<div class="table-container">
+  <table mat-table [dataSource]="requests()" class="request-table">
+
+    <!-- ID Column -->
+    <ng-container matColumnDef="id">
+      <th mat-header-cell *matHeaderCellDef>ID</th>
+      <td mat-cell *matCellDef="let request">{{ request.id }}</td>
+    </ng-container>
+
+    <!-- Nome Column -->
+    <ng-container matColumnDef="nome">
+      <th mat-header-cell *matHeaderCellDef>Nome</th>
+      <td mat-cell *matCellDef="let request">{{ request.nome }}</td>
+    </ng-container>
+
+    <!-- Alamat Column -->
+    <ng-container matColumnDef="alamat">
+      <th mat-header-cell *matHeaderCellDef>Endereço</th>
+      <td mat-cell *matCellDef="let request">{{ request.alamat }}</td>
+    </ng-container>
+
+    <!-- Email Column -->
+    <ng-container matColumnDef="email">
+      <th mat-header-cell *matHeaderCellDef>Email</th>
+      <td mat-cell *matCellDef="let request">{{ request.email }}</td>
+    </ng-container>
+
+    <!-- Jenis Kelamin Column -->
+    <ng-container matColumnDef="jenisKelamin">
+      <th mat-header-cell *matHeaderCellDef>Gênero</th>
+      <td mat-cell *matCellDef="let request">{{ request.jenisKelamin }}</td>
+    </ng-container>
+
+    <!-- Actions Column -->
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Ações</th>
+      <td mat-cell *matCellDef="let request">
+        <button mat-icon-button matTooltip="Editar" (click)="onEdit(request)">
+          <mat-icon class="action-edit">edit</mat-icon>
+        </button>
+        <button mat-icon-button matTooltip="Excluir" (click)="onDelete(request)">
+          <mat-icon class="action-delete">delete</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>

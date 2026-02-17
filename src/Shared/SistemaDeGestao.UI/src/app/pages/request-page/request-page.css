@@ -1,0 +1,21 @@
+.request-page {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  min-height: calc(100vh - 64px);
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 80px 0;
+}
+
+.fab-add {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 100;
+}

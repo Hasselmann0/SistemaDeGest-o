@@ -1,0 +1,45 @@
+.table-container {
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+  overflow-x: auto;
+}
+
+.request-table {
+  width: 100%;
+}
+
+.mat-mdc-header-cell {
+  font-weight: 600;
+  color: #555;
+  font-size: 14px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.mat-mdc-cell {
+  font-size: 14px;
+  color: #333;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.mat-mdc-row:hover {
+  background-color: #fafafa;
+}
+
+.action-edit {
+  color: #757575;
+  cursor: pointer;
+}
+
+.action-edit:hover {
+  color: #7b1fa2;
+}
+
+.action-delete {
+  color: #757575;
+  cursor: pointer;
+}
+
+.action-delete:hover {
+  color: #d32f2f;
+}

@@ -16,5 +16,7 @@ namespace SistemaDeGestao.Domain.Entities
         // Navigation Properties
         public ICollection<RequestEntity> CreatedRequests { get; set; } = [];
         public ICollection<RequestStatusHistory> StatusHistories { get; set; } = [];
+
     }
+
 }
