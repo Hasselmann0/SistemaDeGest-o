@@ -30,7 +30,6 @@ namespace SistemaDeGestao.APP.Services
 
             var created = await _requestRepository.CreateAsync(request);
 
-            // Registrar histórico inicial
             await _requestRepository.AddStatusHistoryAsync(new RequestStatusHistory
             {
                 RequestId = created.Id,
@@ -49,7 +48,6 @@ namespace SistemaDeGestao.APP.Services
             if (request is null)
                 return null;
 
-            // User só pode ver suas próprias solicitações
             if (!isManager && request.CreatedByUserId != userId.ToString())
                 return null;
 
@@ -58,7 +56,7 @@ namespace SistemaDeGestao.APP.Services
 
         public async Task<IEnumerable<RequestDto>> GetAllAsync(RequestFilterDto filter, Guid userId, bool isManager)
         {
-            // User só vê as próprias, Manager vê todas
+
             var userIdFilter = isManager ? null : userId.ToString();
 
             var requests = await _requestRepository.GetAllAsync(
@@ -111,7 +109,6 @@ namespace SistemaDeGestao.APP.Services
 
             await _requestRepository.UpdateAsync(request);
 
-            // Registrar histórico
             await _requestRepository.AddStatusHistoryAsync(new RequestStatusHistory
             {
                 RequestId = requestId,

@@ -12,8 +12,8 @@ using SistemaDeGestao.Infra.Data;
 namespace SistemaDeGestao.Infra.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20260218155502_SeedUsersUpdate")]
-    partial class SeedUsersUpdate
+    [Migration("20260218162610_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
