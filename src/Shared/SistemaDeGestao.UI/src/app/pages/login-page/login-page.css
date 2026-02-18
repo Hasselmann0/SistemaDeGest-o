@@ -39,7 +39,9 @@
 
 .login-icon {
   font-size: 36px;
-  display: block;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 12px;
   margin-bottom: 8px;
 }
 

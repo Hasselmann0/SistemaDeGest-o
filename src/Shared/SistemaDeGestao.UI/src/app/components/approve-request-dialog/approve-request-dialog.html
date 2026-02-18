@@ -1,0 +1,24 @@
+<h2 mat-dialog-title>
+  <mat-icon class="title-icon">check_circle</mat-icon>
+  Aprovar Solicitação
+</h2>
+
+<mat-dialog-content>
+  <form class="approve-form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Observação (opcional)</mat-label>
+      <textarea
+        matInput
+        [(ngModel)]="comment"
+        name="comment"
+        placeholder="Adicione uma observação se desejar"
+        rows="4"
+      ></textarea>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="onConfirm()">Aprovar</button>
+</mat-dialog-actions>

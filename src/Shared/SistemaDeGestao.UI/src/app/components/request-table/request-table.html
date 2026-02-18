@@ -52,7 +52,7 @@
         <button mat-icon-button matTooltip="Ver histórico" (click)="onViewHistory(request)">
           <mat-icon class="action-view">history</mat-icon>
         </button>
-        @if (request.status === 'Pending') {
+        @if (request.status === 'Pending' && isManager()) {
           <button mat-icon-button matTooltip="Aprovar" (click)="onApprove(request)">
             <mat-icon class="action-approve">check_circle</mat-icon>
           </button>

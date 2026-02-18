@@ -9,6 +9,8 @@ import { RequestService } from '../../services/request.service';
 import { RequestDto } from '../../models/request.model';
 import { RequestHistoryDialogComponent } from '../../components/request-history-dialog/request-history-dialog';
 import { CreateRequestDialogComponent } from '../../components/create-request-dialog/create-request-dialog';
+import { RejectRequestDialogComponent } from '../../components/reject-request-dialog/reject-request-dialog';
+import { ApproveRequestDialogComponent } from '../../components/approve-request-dialog/approve-request-dialog';
 
 @Component({
   selector: 'app-request-page',
@@ -75,42 +77,54 @@ export class RequestPageComponent implements OnInit {
   }
 
   onApproveRequest(request: RequestDto): void {
-    this.requestService.approve(request.id, {}).subscribe({
-      next: () => {
-        this.snackBar.open('Solicitação aprovada com sucesso!', 'Fechar', { duration: 3000 });
-        this.loadRequests();
-      },
-      error: (err) => {
-        console.error('Erro ao aprovar solicitação:', err);
-        this.snackBar.open(
-          err.error?.message ?? 'Erro ao aprovar solicitação.',
-          'Fechar',
-          { duration: 5000 }
-        );
-      },
+    const dialogRef = this.dialog.open(ApproveRequestDialogComponent, {
+      width: '480px',
+      disableClose: true,
+    });
+
+    dialogRef.afterClosed().subscribe((result: { confirmed: boolean; comment: string } | null) => {
+      if (!result?.confirmed) return;
+
+      this.requestService.approve(request.id, { comment: result.comment || undefined }).subscribe({
+        next: () => {
+          this.snackBar.open('Solicitação aprovada com sucesso!', 'Fechar', { duration: 3000 });
+          this.loadRequests();
+        },
+        error: (err) => {
+          console.error('Erro ao aprovar solicitação:', err);
+          this.snackBar.open(
+            err.error?.message ?? 'Erro ao aprovar solicitação.',
+            'Fechar',
+            { duration: 5000 }
+          );
+        },
+      });
     });
   }
 
   onRejectRequest(request: RequestDto): void {
-    const comment = prompt('Justificativa para rejeição (mín. 10 caracteres):');
-    if (!comment || comment.length < 10) {
-      this.snackBar.open('Justificativa deve ter no mínimo 10 caracteres.', 'Fechar', { duration: 4000 });
-      return;
-    }
+    const dialogRef = this.dialog.open(RejectRequestDialogComponent, {
+      width: '480px',
+      disableClose: true,
+    });
 
-    this.requestService.reject(request.id, { comment }).subscribe({
-      next: () => {
-        this.snackBar.open('Solicitação rejeitada.', 'Fechar', { duration: 3000 });
-        this.loadRequests();
-      },
-      error: (err) => {
-        console.error('Erro ao rejeitar solicitação:', err);
-        this.snackBar.open(
-          err.error?.message ?? 'Erro ao rejeitar solicitação.',
-          'Fechar',
-          { duration: 5000 }
-        );
-      },
+    dialogRef.afterClosed().subscribe((comment: string | null) => {
+      if (!comment) return;
+
+      this.requestService.reject(request.id, { comment }).subscribe({
+        next: () => {
+          this.snackBar.open('Solicitação rejeitada.', 'Fechar', { duration: 3000 });
+          this.loadRequests();
+        },
+        error: (err) => {
+          console.error('Erro ao rejeitar solicitação:', err);
+          this.snackBar.open(
+            err.error?.message ?? 'Erro ao rejeitar solicitação.',
+            'Fechar',
+            { duration: 5000 }
+          );
+        },
+      });
     });
   }
 }

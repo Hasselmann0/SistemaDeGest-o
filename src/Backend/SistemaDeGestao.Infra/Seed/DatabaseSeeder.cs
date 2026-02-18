@@ -69,7 +69,7 @@ namespace SistemaDeGestao.Infra.Seed
                         UserName = "admin@sistema.com",
                         Email = "admin@sistema.com",
                         EmailConfirmed = true,
-                        Role = UserRole.Manager,
+                        Role = UserRole.User,
                         IsActive = true,
                         CreatedAt = DateTime.UtcNow
                     },

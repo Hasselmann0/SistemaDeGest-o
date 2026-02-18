@@ -1,0 +1,32 @@
+<h2 mat-dialog-title>
+  <mat-icon class="title-icon">cancel</mat-icon>
+  Rejeitar Solicitação
+</h2>
+
+<mat-dialog-content>
+  @if (errorMessage()) {
+    <div class="error-message">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ errorMessage() }}</span>
+    </div>
+  }
+
+  <form class="reject-form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Justificativa</mat-label>
+      <textarea
+        matInput
+        [(ngModel)]="comment"
+        name="comment"
+        placeholder="Descreva o motivo da rejeição"
+        rows="4"
+      ></textarea>
+      <mat-hint>Mín. 10 caracteres</mat-hint>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancelar</button>
+  <button mat-flat-button color="warn" (click)="onConfirm()">Rejeitar</button>
+</mat-dialog-actions>

@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { Component, computed, inject, input, output } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,6 +11,7 @@ import {
   RequestCategoryLabel,
   RequestPriorityLabel,
 } from '../../models/request.model';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-request-table',
@@ -20,6 +21,10 @@ import {
   styleUrl: './request-table.css',
 })
 export class RequestTableComponent {
+  private readonly authService = inject(AuthService);
+
+  readonly isManager = computed(() => this.authService.currentUser()?.role === 'Manager');
+
   readonly requests = input.required<RequestDto[]>();
 
   readonly viewHistory = output<RequestDto>();
