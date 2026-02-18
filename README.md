@@ -1,318 +1,491 @@
-# SistemaDeGestão — Frontend (Angular)
+# Sistema de Gestão - API
 
-Sistema de gestão de solicitações internas com autenticação JWT, controle de permissões por role (User/Manager) e fluxo completo de criação, aprovação e rejeição de solicitações.
-
----
-
-## Índice
-
-- [Pré-requisitos](#pré-requisitos)
-- [Instalação](#instalação)
-- [Comandos Disponíveis](#comandos-disponíveis)
-- [Configuração da API](#configuração-da-api)
-- [Sobre o Projeto](#sobre-o-projeto)
-- [Fluxo de Dados](#fluxo-de-dados)
-- [Endpoints da API](#endpoints-da-api)
-- [Estrutura de Pastas](#estrutura-de-pastas)
-- [Tecnologias Utilizadas](#tecnologias-utilizadas)
+Sistema de gestão de solicitações desenvolvido em **.NET 10** com arquitetura em camadas, autenticação JWT e ASP.NET Core Identity.
 
 ---
 
-## Pré-requisitos
+## 📋 Índice
 
-Antes de começar, certifique-se de ter instalado:
-
-| Ferramenta | Versão mínima | Como verificar        |
-| ---------- | ------------- | --------------------- |
-| **Node.js** | 18.x+        | `node --version`      |
-| **npm**     | 9.x+         | `npm --version`       |
-| **Angular CLI** | 21.x     | `ng version`          |
-
-> Se não tiver o Angular CLI instalado globalmente:
-> ```bash
-> npm install -g @angular/cli
-> ```
-
-Também é necessário que o **Backend (.NET)** esteja rodando em `https://localhost:7041` para que as chamadas à API funcionem.
+- [Tecnologias Utilizadas](#-tecnologias-utilizadas)
+- [Pré-requisitos](#-pré-requisitos)
+- [Configuração do Ambiente](#-configuração-do-ambiente)
+- [Como Executar](#-como-executar)
+- [Estrutura do Projeto](#-estrutura-do-projeto)
+- [Arquitetura](#-arquitetura)
+- [Endpoints da API](#-endpoints-da-api)
+- [Modelos de Dados](#-modelos-de-dados)
+- [Fluxo de Dados](#-fluxo-de-dados)
+- [Usuários de Teste](#-usuários-de-teste)
 
 ---
 
-## Instalação
+## 🚀 Tecnologias Utilizadas
 
-1. **Clone o repositório** (caso ainda não tenha):
-   ```bash
-   git clone https://github.com/Hasselmann0/SistemaDeGest-o.git
-   cd SistemaDeGest-o/src/Shared/SistemaDeGestao.UI
-   ```
-
-2. **Instale as dependências**:
-   ```bash
-   npm install
-   ```
-
-3. **Inicie o servidor de desenvolvimento**:
-   ```bash
-   ng serve
-   ```
-
-4. **Acesse no navegador**:
-   ```
-   http://localhost:4200
-   ```
+| Tecnologia | Versão | Descrição |
+|------------|--------|-----------|
+| .NET | 10.0 | Framework principal |
+| ASP.NET Core | 10.0 | Framework web |
+| Entity Framework Core | 10.0.3 | ORM para acesso a dados |
+| SQL Server | - | Banco de dados relacional |
+| ASP.NET Core Identity | 10.0.3 | Autenticação e autorização |
+| JWT Bearer | 10.0.3 | Tokens de autenticação |
+| Swashbuckle | 10.1.2 | Documentação Swagger/OpenAPI |
 
 ---
 
-## Comandos Disponíveis
+## 📦 Pré-requisitos
 
-| Comando            | Descrição                                                    |
-| ------------------ | ------------------------------------------------------------ |
-| `npm start`        | Inicia o servidor de desenvolvimento (`ng serve`)            |
-| `npm run build`    | Compila o projeto para produção na pasta `dist/`             |
-| `npm run watch`    | Compila em modo watch (recompila a cada alteração)           |
-| `npm test`         | Executa os testes unitários com Vitest                       |
-| `ng generate component nome` | Gera um novo componente via Angular CLI            |
+Antes de executar o projeto, certifique-se de ter instalado:
 
----
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0)
+- [SQL Server](https://www.microsoft.com/sql-server) (local ou Docker)
+- [Visual Studio 2022](https://visualstudio.microsoft.com/) ou [VS Code](https://code.visualstudio.com/)
 
-## Configuração da API
+### SQL Server via Docker (opcional)
 
-A URL base da API está configurada nos services:
-
-- **Auth:** `https://localhost:7041/api/Auth` — em `src/app/services/auth.service.ts`
-- **Requests:** `https://localhost:7041/api/requests` — em `src/app/services/request.service.ts`
-
-> Para apontar para outra URL, altere a propriedade `apiUrl` diretamente nos arquivos de service.
-
-O CORS do backend já está configurado para aceitar requisições de `http://localhost:4200`.
-
----
-
-## Sobre o Projeto
-
-O **SistemaDeGestão** é uma aplicação de gestão de solicitações internas de uma empresa. Ele possui dois perfis de usuário:
-
-### Perfis de Usuário
-
-| Role        | Permissões                                                                       |
-| ----------- | -------------------------------------------------------------------------------- |
-| **User**    | Criar solicitações, visualizar suas próprias solicitações, ver histórico          |
-| **Manager** | Tudo do User + visualizar todas as solicitações, aprovar e rejeitar solicitações  |
-
-### Funcionalidades
-
-- **Login** com autenticação JWT (com opção "Lembrar-me")
-- **Listagem** de solicitações em tabela com colunas: Título, Categoria, Prioridade, Status, Solicitante, Data de Criação
-- **Criação** de nova solicitação via dialog (Título, Descrição, Categoria, Prioridade)
-- **Aprovação** de solicitações pendentes (Manager only)
-- **Rejeição** de solicitações pendentes com justificativa obrigatória (Manager only)
-- **Histórico** de mudanças de status de cada solicitação (timeline visual)
-- **Logout** com limpeza de tokens
-
-### Enums do Sistema
-
-| Enum             | Valores                          |
-| ---------------- | -------------------------------- |
-| **Status**       | Pending (Pendente), Approved (Aprovado), Rejected (Rejeitado) |
-| **Categoria**    | Compras, TI, Reembolso           |
-| **Prioridade**   | Baixa, Média, Alta               |
-
----
-
-## Fluxo de Dados
-
-```
-┌──────────────┐     POST /api/Auth/login      ┌──────────────┐
-│              │ ──────────────────────────────► │              │
-│   Frontend   │ ◄────────────────────────────── │   Backend    │
-│  (Angular)   │     { token, user }             │  (.NET API)  │
-│              │                                 │              │
-│  localStorage│     GET/POST /api/requests      │  SQL Server  │
-│  sessionStore│ ──────────────────────────────► │              │
-│              │ ◄────────────────────────────── │              │
-└──────────────┘     Authorization: Bearer JWT   └──────────────┘
-```
-
-### Fluxo de Autenticação
-
-1. Usuário preenche email e senha na tela de login
-2. `AuthService.login()` faz `POST /api/Auth/login`
-3. Backend valida credenciais e retorna `{ token, expiresAt, user }`
-4. Token JWT é salvo no `localStorage` (se "Lembrar-me") ou `sessionStorage`
-5. `authInterceptor` injeta o header `Authorization: Bearer <token>` em todas as requisições subsequentes
-6. Se a API retornar 401/403, o interceptor faz logout automático
-
-### Fluxo de Solicitações
-
-1. Usuário acessa `/requests` (protegido pelo `authGuard`)
-2. `RequestPageComponent` chama `RequestService.getAll()` → `GET /api/requests`
-3. Backend filtra: Manager vê todas, User vê apenas as suas
-4. Tabela exibe os dados com badges coloridos de status e prioridade
-5. **Criar:** Botão FAB (+) → abre `CreateRequestDialog` → `POST /api/requests`
-6. **Aprovar:** Botão ✓ na tabela → `POST /api/requests/{id}/approve` (Manager only)
-7. **Rejeitar:** Botão ✗ na tabela → pede justificativa → `POST /api/requests/{id}/reject` (Manager only)
-8. **Histórico:** Botão 🕑 na tabela → abre `RequestHistoryDialog` → `GET /api/requests/{id}/history`
-
-### Proteção de Rotas
-
-```
-/login          → Pública (qualquer um acessa)
-/requests       → Protegida pelo authGuard (requer login)
-/               → Redireciona para /requests
+```bash
+docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=SqlServer@2026!" -p 1433:1433 -d mcr.microsoft.com/mssql/server:2022-latest
 ```
 
 ---
 
-## Endpoints da API
+## ⚙️ Configuração do Ambiente
 
-### Auth
+### 1. Clone o repositório
 
-| Método | Endpoint             | Descrição          | Auth    |
-| ------ | -------------------- | ------------------ | ------- |
-| POST   | `/api/Auth/login`    | Login do usuário   | Não     |
-
-**Request:**
-```json
-{ "email": "user@email.com", "password": "senha123" }
+```bash
+git clone https://github.com/Hasselmann0/SistemaDeGest-o.git
+cd SistemaDeGest-o
 ```
 
-**Response (200):**
+### 2. Configure a Connection String
+
+Edite o arquivo `SistemaDeGestao/appsettings.json`:
+
 ```json
 {
-  "token": "eyJhbGciOi...",
-  "expiresAt": "2026-02-18T00:00:00Z",
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=localhost,1433;Database=SistemaDeGestao;User Id=sa;Password=SuaSenha;TrustServerCertificate=True;"
+  },
+  "Jwt": {
+    "Secret": "ChaveSecretaSuperSeguraParaJWTComMaisDe32Caracteres!@#2024",
+    "Issuer": "SistemaDeGestao",
+    "Audience": "SistemaDeGestao.Client",
+    "ExpirationInMinutes": 60
+  }
+}
+```
+
+### 3. Execute as Migrations
+
+```bash
+cd SistemaDeGestao
+dotnet ef database update --project ../SistemaDeGestao.Infra
+```
+
+---
+
+## ▶️ Como Executar
+
+### Via CLI
+
+```bash
+cd SistemaDeGestao
+dotnet run
+```
+
+### Via Visual Studio
+
+1. Abra a solução `SistemaDeGestao.sln`
+2. Defina `SistemaDeGestao.API` como projeto de inicialização
+3. Pressione `F5` ou clique em "Iniciar"
+
+### Acessar a API
+
+- **Swagger UI**: https://localhost:{porta}/swagger
+- **API Base URL**: https://localhost:{porta}/api
+
+---
+
+## 📁 Estrutura do Projeto
+
+```
+SistemaDeGestao/
+├── SistemaDeGestao.API/              # Camada de Apresentação (API)
+│   ├── Controllers/
+│   │   ├── AuthController.cs         # Endpoints de autenticação
+│   │   └── RequestController.cs      # Endpoints de solicitações
+│   ├── Program.cs                    # Configuração da aplicação
+│   ├── appsettings.json              # Configurações
+│   └── SistemaDeGestao.API.csproj
+│
+├── SistemaDeGestao.APP/              # Camada de Aplicação (Serviços)
+│   ├── DTOs/
+│   │   ├── Auth/
+│   │   │   ├── LoginRequestDto.cs
+│   │   │   ├── LoginResponseDto.cs
+│   │   │   └── UserInfoDto.cs
+│   │   └── Requests/
+│   │       ├── CreateRequestDto.cs
+│   │       ├── RequestDto.cs
+│   │       ├── RequestDetailDto.cs
+│   │       ├── RequestFilterDto.cs
+│   │       ├── ApproveRequestDto.cs
+│   │       └── RejectRequestDto.cs
+│   ├── Interfaces/
+│   │   ├── IAuthService.cs
+│   │   └── IRequestService.cs
+│   ├── Mapper/
+│   │   └── RequestMapper.cs
+│   ├── Services/
+│   │   ├── AuthService.cs
+│   │   └── RequestService.cs
+│   └── SistemaDeGestao.APP.csproj
+│
+├── SistemaDeGestao.Domain/           # Camada de Domínio (Entidades)
+│   ├── Entities/
+│   │   ├── BaseEntity.cs
+│   │   ├── UserEntity.cs
+│   │   ├── RequestEntity.cs
+│   │   └── RequestStatusHistory.cs
+│   ├── Enums/
+│   │   ├── UserRole.cs
+│   │   ├── RequestStatus.cs
+│   │   ├── RequestCategory.cs
+│   │   └── RequestPriority.cs
+│   ├── Interfaces/
+│   │   ├── ILoginRepository.cs
+│   │   └── IRequestRepository.cs
+│   └── SistemaDeGestao.Domain.csproj
+│
+├── SistemaDeGestao.Infra/            # Camada de Infraestrutura (Dados)
+│   ├── Data/
+│   │   ├── ApplicationDbContext.cs
+│   │   └── Configurations/
+│   │       ├── UserConfiguration.cs
+│   │       ├── RequestConfiguration.cs
+│   │       └── RequestStatusHistoryConfiguration.cs
+│   ├── Migrations/
+│   ├── Repositories/
+│   │   ├── LoginRepository.cs
+│   │   └── RequestRepository.cs
+│   ├── Seed/
+│   │   └── DatabaseSeeder.cs
+│   └── SistemaDeGestao.Infra.csproj
+│
+└── SistemaDeGestao.sln
+```
+
+---
+
+## 🏗️ Arquitetura
+
+O projeto segue a **Arquitetura em Camadas (Layered Architecture)** com separação clara de responsabilidades:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    SistemaDeGestao.API                      │
+│                  (Controllers, Program.cs)                  │
+│                    Camada de Apresentação                   │
+└─────────────────────────┬───────────────────────────────────┘
+                          │
+                          ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    SistemaDeGestao.APP                      │
+│              (Services, DTOs, Mappers, Interfaces)          │
+│                    Camada de Aplicação                      │
+└─────────────────────────┬───────────────────────────────────┘
+                          │
+                          ▼
+┌─────────────────────────────────────────────────────────────┐
+│                   SistemaDeGestao.Domain                    │
+│              (Entities, Enums, Interfaces)                  │
+│                     Camada de Domínio                       │
+└─────────────────────────┬───────────────────────────────────┘
+                          │
+                          ▼
+┌─────────────────────────────────────────────────────────────┐
+│                   SistemaDeGestao.Infra                     │
+│         (DbContext, Repositories, Configurations)           │
+│                  Camada de Infraestrutura                   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## 📡 Endpoints da API
+
+### Autenticação
+
+| Método | Endpoint | Descrição | Autenticação |
+|--------|----------|-----------|--------------|
+| `POST` | `/api/auth/login` | Realizar login | ❌ Não |
+
+#### Request Body - Login
+```json
+{
+  "email": "user@sistema.com",
+  "password": "User@123"
+}
+```
+
+#### Response - Login
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "expiresAt": "2024-01-01T12:00:00Z",
   "user": {
-    "id": "guid-aqui",
-    "name": "Nome do Usuário",
-    "email": "user@email.com",
+    "id": "guid",
+    "email": "user@sistema.com",
     "role": "User"
   }
 }
 ```
 
-### Requests
+---
 
-| Método | Endpoint                        | Descrição                 | Auth         |
-| ------ | ------------------------------- | ------------------------- | ------------ |
-| GET    | `/api/requests`                 | Listar solicitações       | Bearer Token |
-| POST   | `/api/requests`                 | Criar solicitação         | Bearer Token |
-| GET    | `/api/requests/{id}`            | Detalhes da solicitação   | Bearer Token |
-| POST   | `/api/requests/{id}/approve`    | Aprovar solicitação       | **Manager**  |
-| POST   | `/api/requests/{id}/reject`     | Rejeitar solicitação      | **Manager**  |
-| GET    | `/api/requests/{id}/history`    | Histórico de status       | Bearer Token |
+### Solicitações (Requests)
 
-**GET /api/requests** — Query params opcionais: `status`, `category`, `priority`, `searchText`
+| Método | Endpoint | Descrição | Autenticação | Roles |
+|--------|----------|-----------|--------------|-------|
+| `GET` | `/api/requests` | Listar solicitações | ✅ Sim | Todos |
+| `GET` | `/api/requests/{id}` | Obter solicitação por ID | ✅ Sim | Todos |
+| `POST` | `/api/requests` | Criar nova solicitação | ✅ Sim | Todos |
+| `POST` | `/api/requests/{id}/approve` | Aprovar solicitação | ✅ Sim | Manager |
+| `POST` | `/api/requests/{id}/reject` | Rejeitar solicitação | ✅ Sim | Manager |
+| `GET` | `/api/requests/{id}/history` | Histórico de status | ✅ Sim | Todos |
 
-**POST /api/requests — Request:**
+#### Query Parameters - Listar Solicitações
+
+| Parâmetro | Tipo | Descrição |
+|-----------|------|-----------|
+| `status` | `int?` | Filtrar por status (0=Pending, 1=Approved, 2=Rejected) |
+| `category` | `int?` | Filtrar por categoria (0=Compras, 1=TI, 2=Reembolso) |
+| `priority` | `int?` | Filtrar por prioridade (0=Baixa, 1=Media, 2=Alta) |
+| `searchText` | `string?` | Busca por texto no título/descrição |
+
+#### Request Body - Criar Solicitação
 ```json
 {
   "title": "Compra de equipamento",
-  "description": "Necessário novo monitor para o setor de TI",
-  "category": 0,
+  "description": "Necessário comprar novo monitor para o setor de TI",
+  "category": 1,
   "priority": 2
 }
 ```
 
-**POST /api/requests/{id}/approve — Request:**
+#### Request Body - Aprovar
 ```json
-{ "comment": "Aprovado conforme orçamento" }
+{
+  "comment": "Aprovado conforme orçamento disponível"
+}
 ```
 
-**POST /api/requests/{id}/reject — Request:**
+#### Request Body - Rejeitar
 ```json
-{ "comment": "Orçamento insuficiente para este período" }
+{
+  "comment": "Rejeitado por falta de orçamento no período atual"
+}
 ```
 
 ---
 
-## Estrutura de Pastas
+## 📊 Modelos de Dados
 
-```
-SistemaDeGestao.UI/
-├── angular.json                 # Configuração do Angular CLI
-├── package.json                 # Dependências e scripts
-├── tsconfig.json                # Configuração TypeScript base
-├── tsconfig.app.json            # Configuração TS para a aplicação
-├── tsconfig.spec.json           # Configuração TS para testes
-│
-├── public/                      # Arquivos estáticos (favicon, imagens)
-│
-└── src/
-    ├── index.html               # HTML principal (entry point)
-    ├── main.ts                  # Bootstrap da aplicação Angular
-    ├── styles.css               # Estilos globais
-    ├── material-theme.scss      # Tema customizado do Angular Material
-    │
-    └── app/
-        ├── app.ts               # Componente raiz (App)
-        ├── app.html             # Template do App (navbar + router-outlet)
-        ├── app.css              # Estilos do App
-        ├── app.config.ts        # Configuração (providers, interceptors)
-        ├── app.routes.ts        # Definição de rotas
-        │
-        ├── models/              # Interfaces e enums TypeScript
-        │   ├── auth.model.ts    #   LoginRequest, LoginResponse, LoginUser
-        │   └── request.model.ts #   RequestDto, CreateRequestDto, enums, etc.
-        │
-        ├── services/            # Serviços (comunicação com a API)
-        │   ├── auth.service.ts  #   Login, logout, gerenciamento de token
-        │   └── request.service.ts #  CRUD de solicitações + approve/reject/history
-        │
-        ├── guards/              # Guards de rota
-        │   └── auth.guard.ts    #   Protege rotas que requerem autenticação
-        │
-        ├── interceptors/        # Interceptors HTTP
-        │   └── auth.interceptor.ts # Injeta token JWT nos headers
-        │
-        ├── components/          # Componentes reutilizáveis
-        │   ├── navbar/          #   Barra de navegação superior
-        │   │   ├── navbar.ts
-        │   │   ├── navbar.html
-        │   │   └── navbar.css
-        │   │
-        │   ├── request-table/   #   Tabela de solicitações (Material Table)
-        │   │   ├── request-table.ts
-        │   │   ├── request-table.html
-        │   │   └── request-table.css
-        │   │
-        │   ├── request-history-dialog/  # Dialog com timeline de histórico
-        │   │   ├── request-history-dialog.ts
-        │   │   ├── request-history-dialog.html
-        │   │   └── request-history-dialog.css
-        │   │
-        │   └── create-request-dialog/   # Dialog para criar nova solicitação
-        │       ├── create-request-dialog.ts
-        │       ├── create-request-dialog.html
-        │       └── create-request-dialog.css
-        │
-        └── pages/               # Páginas (rotas)
-            ├── login-page/      #   Tela de login
-            │   ├── login-page.ts
-            │   ├── login-page.html
-            │   └── login-page.css
-            │
-            └── request-page/    #   Tela principal de solicitações
-                ├── request-page.ts
-                ├── request-page.html
-                └── request-page.css
-```
+### UserEntity
 
-### Convenções de Arquitetura
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| Id | `string` | Identificador único (Identity) |
+| UserName | `string` | Nome de usuário |
+| Email | `string` | Email do usuário |
+| Role | `UserRole` | Papel do usuário |
+| IsActive | `bool` | Status ativo/inativo |
+| CreatedAt | `DateTime` | Data de criação |
+| UpdatedAt | `DateTime?` | Data de atualização |
 
-- **Standalone Components** — Todos os componentes são standalone (sem NgModules)
-- **Signals** — Estado reativo via `signal()` do Angular (não usa RxJS para estado local)
-- **Functional Guards/Interceptors** — Usa `CanActivateFn` e `HttpInterceptorFn`
-- **Lazy Loading** — Páginas carregadas sob demanda via `loadComponent()`
-- **Angular Material** — UI baseada em Material Design (toolbar, table, dialog, form fields, etc.)
+### RequestEntity
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| Id | `Guid` | Identificador único |
+| Title | `string` | Título da solicitação |
+| Description | `string` | Descrição detalhada |
+| Category | `RequestCategory` | Categoria |
+| Priority | `RequestPriority` | Prioridade |
+| Status | `RequestStatus` | Status atual |
+| CreatedByUserId | `string` | ID do criador |
+| CreatedAt | `DateTime` | Data de criação |
+
+### RequestStatusHistory
+
+| Campo | Tipo | Descrição |
+|-------|------|-----------|
+| Id | `Guid` | Identificador único |
+| RequestId | `Guid` | ID da solicitação |
+| FromStatus | `RequestStatus` | Status anterior |
+| ToStatus | `RequestStatus` | Novo status |
+| ChangedByUserId | `string` | ID de quem alterou |
+| Comment | `string?` | Comentário da alteração |
+| CreatedAt | `DateTime` | Data da alteração |
+
+### Enumerações
+
+#### RequestStatus
+| Valor | Nome | Descrição |
+|-------|------|-----------|
+| 0 | Pending | Pendente |
+| 1 | Approved | Aprovado |
+| 2 | Rejected | Rejeitado |
+
+#### RequestCategory
+| Valor | Nome | Descrição |
+|-------|------|-----------|
+| 0 | Compras | Solicitações de compras |
+| 1 | TI | Solicitações de TI |
+| 2 | Reembolso | Solicitações de reembolso |
+
+#### RequestPriority
+| Valor | Nome | Descrição |
+|-------|------|-----------|
+| 0 | Baixa | Prioridade baixa |
+| 1 | Media | Prioridade média |
+| 2 | Alta | Prioridade alta |
+
+#### UserRole
+| Valor | Nome | Descrição |
+|-------|------|-----------|
+| 0 | User | Usuário comum |
+| 1 | Manager | Gerente/Aprovador |
 
 ---
 
-## Tecnologias Utilizadas
+## 🔄 Fluxo de Dados
 
-| Tecnologia        | Versão  | Uso                                  |
-| ----------------- | ------- | ------------------------------------ |
-| Angular           | 21.x    | Framework principal                  |
-| Angular Material  | 21.x    | Componentes de UI (Material Design)  |
-| TypeScript        | 5.9     | Linguagem de programação             |
-| RxJS              | 7.8     | Programação reativa (HTTP, streams)  |
-| Vitest            | 4.x     | Framework de testes unitários        |
-| Node.js           | 18+     | Runtime para ferramentas de dev      |
+### Fluxo de Autenticação
+
+```
+┌──────────┐     POST /api/auth/login      ┌────────────────┐
+│  Cliente │ ──────────────────────────────▶│ AuthController │
+└──────────┘                                └───────┬────────┘
+                                                    │
+                                                    ▼
+                                            ┌───────────────┐
+                                            │  AuthService  │
+                                            └───────┬───────┘
+                                                    │
+                                                    ▼
+                                          ┌─────────────────┐
+                                          │ LoginRepository │
+                                          └───────┬─────────┘
+                                                  │
+                                                  ▼
+                                            ┌───────────┐
+                                            │ Identity  │
+                                            │   (DB)    │
+                                            └─────┬─────┘
+                                                  │
+                              JWT Token           │
+┌──────────┐◀─────────────────────────────────────┘
+│  Cliente │
+└──────────┘
+```
+
+### Fluxo de Criação de Solicitação
+
+```
+┌──────────┐    POST /api/requests     ┌───────────────────┐
+│  Cliente │ ─────────────────────────▶│ RequestController │
+│ (c/ JWT) │                           └─────────┬─────────┘
+└──────────┘                                     │
+                                                 ▼
+                                         ┌───────────────┐
+                                         │RequestService │
+                                         └───────┬───────┘
+                                                 │
+                                                 ▼
+                                       ┌───────────────────┐
+                                       │RequestRepository  │
+                                       └─────────┬─────────┘
+                                                 │
+                                                 ▼
+                                           ┌───────────┐
+                                           │  SQL Server│
+                                           │   (DB)    │
+                                           └─────┬─────┘
+                                                 │
+              RequestDto                         │
+┌──────────┐◀────────────────────────────────────┘
+│  Cliente │
+└──────────┘
+```
+
+### Fluxo de Aprovação/Rejeição
+
+```
+┌──────────┐   POST /api/requests/{id}/approve   ┌───────────────────┐
+│ Manager  │ ───────────────────────────────────▶│ RequestController │
+│ (c/ JWT) │                                     └─────────┬─────────┘
+└──────────┘                                               │
+                                                           ▼
+                                                   ┌───────────────┐
+                                                   │RequestService │
+                                                   └───────┬───────┘
+                                                           │
+                    ┌──────────────────────────────────────┼──────────────────┐
+                    │                                      │                  │
+                    ▼                                      ▼                  ▼
+          ┌─────────────────┐                    ┌─────────────────┐  ┌───────────────┐
+          │ Valida Request  │                    │ Atualiza Status │  │Cria Histórico │
+          │  (Status=Pending)│                    │                 │  │               │
+          └─────────────────┘                    └─────────────────┘  └───────────────┘
+                                                           │
+                                                           ▼
+                                                     ┌───────────┐
+                                                     │  SQL Server│
+                                                     └─────┬─────┘
+                                                           │
+                            RequestDto                     │
+┌──────────┐◀──────────────────────────────────────────────┘
+│ Manager  │
+└──────────┘
+```
+
+---
+
+## 👥 Usuários de Teste
+
+O sistema cria automaticamente os seguintes usuários ao iniciar (Seed):
+
+| Email | Senha | Role | Descrição |
+|-------|-------|------|-----------|
+| `admin@sistema.com` | `Admin@123` | Manager | Administrador/Gerente |
+| `manager@sistema.com` | `Manager@123` | Manager | Gerente |
+| `user@sistema.com` | `User@123` | User | Usuário comum |
+
+---
+
+## 🔐 Segurança
+
+- **Autenticação**: JWT Bearer Token
+- **Autorização**: Role-based (User, Manager)
+- **Identity**: ASP.NET Core Identity com Entity Framework
+- **CORS**: Configurado para `http://localhost:4200` (Angular)
+
+### Headers de Autenticação
+
+```http
+Authorization: Bearer {seu_token_jwt}
+```
+
+---
+
+## 📝 Licença
+
+Este projeto está sob a licença MIT.
+
+---
+
+## 👨‍💻 Autor
+
+Desenvolvido por [Hasselmann0](https://github.com/Hasselmann0)
