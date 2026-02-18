@@ -26,20 +26,75 @@
   background-color: #fafafa;
 }
 
-.action-edit {
+.action-view {
   color: #757575;
   cursor: pointer;
 }
 
-.action-edit:hover {
-  color: #7b1fa2;
+.action-view:hover {
+  color: #1976d2;
 }
 
-.action-delete {
+.action-approve {
   color: #757575;
   cursor: pointer;
 }
 
-.action-delete:hover {
+.action-approve:hover {
+  color: #388e3c;
+}
+
+.action-reject {
+  color: #757575;
+  cursor: pointer;
+}
+
+.action-reject:hover {
   color: #d32f2f;
+}
+
+/* Status badges */
+.status-badge {
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.status-badge[data-status='Pending'] {
+  background-color: #fff3e0;
+  color: #e65100;
+}
+
+.status-badge[data-status='Approved'] {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-badge[data-status='Rejected'] {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+/* Priority badges */
+.priority-badge {
+  padding: 4px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.priority-badge[data-priority='Alta'] {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.priority-badge[data-priority='Media'] {
+  background-color: #fff3e0;
+  color: #e65100;
+}
+
+.priority-badge[data-priority='Baixa'] {
+  background-color: #e8f5e9;
+  color: #2e7d32;
 }

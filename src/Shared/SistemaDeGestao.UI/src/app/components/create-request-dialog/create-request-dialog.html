@@ -1,0 +1,64 @@
+<h2 mat-dialog-title>
+  <mat-icon class="title-icon">add_circle</mat-icon>
+  Nova Solicitação
+</h2>
+
+<mat-dialog-content>
+  @if (errorMessage()) {
+    <div class="error-message">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ errorMessage() }}</span>
+    </div>
+  }
+
+  <form (ngSubmit)="onSubmit()" class="create-form">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Título</mat-label>
+      <input matInput [(ngModel)]="title" name="title" placeholder="Título da solicitação" />
+      <mat-hint>Mín. 3 caracteres</mat-hint>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Descrição</mat-label>
+      <textarea
+        matInput
+        [(ngModel)]="description"
+        name="description"
+        placeholder="Descreva sua solicitação"
+        rows="4"
+      ></textarea>
+      <mat-hint>Mín. 10 caracteres</mat-hint>
+    </mat-form-field>
+
+    <div class="row">
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Categoria</mat-label>
+        <mat-select [(ngModel)]="category" name="category">
+          @for (cat of categories; track cat.value) {
+            <mat-option [value]="cat.value">{{ cat.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Prioridade</mat-label>
+        <mat-select [(ngModel)]="priority" name="priority">
+          @for (pri of priorities; track pri.value) {
+            <mat-option [value]="pri.value">{{ pri.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()" [disabled]="loading()">Cancelar</button>
+  <button mat-flat-button color="primary" (click)="onSubmit()" [disabled]="loading()">
+    @if (loading()) {
+      <mat-spinner diameter="20" color="accent"></mat-spinner>
+    } @else {
+      Criar
+    }
+  </button>
+</mat-dialog-actions>

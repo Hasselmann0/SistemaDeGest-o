@@ -3,9 +3,12 @@ import { MatFabButton } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { RequestTableComponent } from '../../components/request-table/request-table';
 import { RequestService } from '../../services/request.service';
-import { Request } from '../../models/request.model';
+import { RequestDto } from '../../models/request.model';
+import { RequestHistoryDialogComponent } from '../../components/request-history-dialog/request-history-dialog';
+import { CreateRequestDialogComponent } from '../../components/create-request-dialog/create-request-dialog';
 
 @Component({
   selector: 'app-request-page',
@@ -16,6 +19,7 @@ import { Request } from '../../models/request.model';
     MatIconModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
+    MatDialogModule,
   ],
   templateUrl: './request-page.html',
   styleUrl: './request-page.css',
@@ -23,8 +27,9 @@ import { Request } from '../../models/request.model';
 export class RequestPageComponent implements OnInit {
   private readonly requestService = inject(RequestService);
   private readonly snackBar = inject(MatSnackBar);
+  private readonly dialog = inject(MatDialog);
 
-  readonly requests = signal<Request[]>([]);
+  readonly requests = signal<RequestDto[]>([]);
   readonly loading = signal(false);
 
   ngOnInit(): void {
@@ -49,27 +54,63 @@ export class RequestPageComponent implements OnInit {
   }
 
   onAddRequest(): void {
-    // TODO: Abrir dialog de criação de request
-    console.log('Adicionar nova solicitação');
+    const dialogRef = this.dialog.open(CreateRequestDialogComponent, {
+      width: '560px',
+      disableClose: true,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.snackBar.open('Solicitação criada com sucesso!', 'Fechar', { duration: 3000 });
+        this.loadRequests();
+      }
+    });
   }
 
-  onEditRequest(request: Request): void {
-    // TODO: Abrir dialog de edição
-    console.log('Editar solicitação:', request);
+  onViewHistory(request: RequestDto): void {
+    this.dialog.open(RequestHistoryDialogComponent, {
+      width: '520px',
+      data: request,
+    });
   }
 
-  onDeleteRequest(request: Request): void {
-    if (confirm(`Deseja realmente excluir a solicitação "${request.nome}"?`)) {
-      this.requestService.delete(request.id).subscribe({
-        next: () => {
-          this.snackBar.open('Solicitação excluída com sucesso!', 'Fechar', { duration: 3000 });
-          this.loadRequests();
-        },
-        error: (err) => {
-          console.error('Erro ao excluir solicitação:', err);
-          this.snackBar.open('Erro ao excluir solicitação.', 'Fechar', { duration: 5000 });
-        },
-      });
+  onApproveRequest(request: RequestDto): void {
+    this.requestService.approve(request.id, {}).subscribe({
+      next: () => {
+        this.snackBar.open('Solicitação aprovada com sucesso!', 'Fechar', { duration: 3000 });
+        this.loadRequests();
+      },
+      error: (err) => {
+        console.error('Erro ao aprovar solicitação:', err);
+        this.snackBar.open(
+          err.error?.message ?? 'Erro ao aprovar solicitação.',
+          'Fechar',
+          { duration: 5000 }
+        );
+      },
+    });
+  }
+
+  onRejectRequest(request: RequestDto): void {
+    const comment = prompt('Justificativa para rejeição (mín. 10 caracteres):');
+    if (!comment || comment.length < 10) {
+      this.snackBar.open('Justificativa deve ter no mínimo 10 caracteres.', 'Fechar', { duration: 4000 });
+      return;
     }
+
+    this.requestService.reject(request.id, { comment }).subscribe({
+      next: () => {
+        this.snackBar.open('Solicitação rejeitada.', 'Fechar', { duration: 3000 });
+        this.loadRequests();
+      },
+      error: (err) => {
+        console.error('Erro ao rejeitar solicitação:', err);
+        this.snackBar.open(
+          err.error?.message ?? 'Erro ao rejeitar solicitação.',
+          'Fechar',
+          { duration: 5000 }
+        );
+      },
+    });
   }
 }

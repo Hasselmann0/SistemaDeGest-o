@@ -6,8 +6,9 @@
   } @else {
     <app-request-table
       [requests]="requests()"
-      (editRequest)="onEditRequest($event)"
-      (deleteRequest)="onDeleteRequest($event)"
+      (viewHistory)="onViewHistory($event)"
+      (approveRequest)="onApproveRequest($event)"
+      (rejectRequest)="onRejectRequest($event)"
     />
   }
 

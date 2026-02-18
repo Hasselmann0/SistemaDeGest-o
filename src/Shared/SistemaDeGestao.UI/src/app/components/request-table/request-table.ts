@@ -3,28 +3,52 @@ import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { Request } from '../../models/request.model';
+import { MatChipsModule } from '@angular/material/chips';
+import { DatePipe } from '@angular/common';
+import {
+  RequestDto,
+  RequestStatusLabel,
+  RequestCategoryLabel,
+  RequestPriorityLabel,
+} from '../../models/request.model';
 
 @Component({
   selector: 'app-request-table',
   standalone: true,
-  imports: [MatTableModule, MatIconModule, MatButtonModule, MatTooltipModule],
+  imports: [MatTableModule, MatIconModule, MatButtonModule, MatTooltipModule, MatChipsModule, DatePipe],
   templateUrl: './request-table.html',
   styleUrl: './request-table.css',
 })
 export class RequestTableComponent {
-  readonly requests = input.required<Request[]>();
+  readonly requests = input.required<RequestDto[]>();
 
-  readonly editRequest = output<Request>();
-  readonly deleteRequest = output<Request>();
+  readonly viewHistory = output<RequestDto>();
+  readonly approveRequest = output<RequestDto>();
+  readonly rejectRequest = output<RequestDto>();
 
-  displayedColumns: string[] = ['id', 'nome', 'alamat', 'email', 'jenisKelamin', 'actions'];
+  displayedColumns: string[] = ['title', 'category', 'priority', 'status', 'createdByUserName', 'createdAt', 'actions'];
 
-  onEdit(request: Request): void {
-    this.editRequest.emit(request);
+  statusLabel(value: string): string {
+    return RequestStatusLabel[value] ?? value;
   }
 
-  onDelete(request: Request): void {
-    this.deleteRequest.emit(request);
+  categoryLabel(value: string): string {
+    return RequestCategoryLabel[value] ?? value;
+  }
+
+  priorityLabel(value: string): string {
+    return RequestPriorityLabel[value] ?? value;
+  }
+
+  onViewHistory(request: RequestDto): void {
+    this.viewHistory.emit(request);
+  }
+
+  onApprove(request: RequestDto): void {
+    this.approveRequest.emit(request);
+  }
+
+  onReject(request: RequestDto): void {
+    this.rejectRequest.emit(request);
   }
 }
